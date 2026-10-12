@@ -1,5 +1,5 @@
 # SecureScan — Website Security Auditor (MVP)
-
+![SecureScan Tests](https://github.com/eddy235/SecureScan/actions/workflows/python-tests.yml/badge.svg)
 A portfolio project implementing **passive** website configuration checks using FastAPI, httpx, and a responsive vanilla JavaScript dashboard.
 
 ## Features
