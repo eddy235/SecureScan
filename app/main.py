@@ -2,13 +2,14 @@ from __future__ import annotations
 import os
 import httpx
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from .scanner import ScanInputError, scan
-from .history import save_scan, list_scans, get_scan
+from .history import save_scan, list_scans, get_scan, analytics
+from .reports import build_pdf
 
-app = FastAPI(title="SecureScan", version="0.3.0", description="Passive permission-based security configuration checks")
+app = FastAPI(title="SecureScan", version="0.4.0", description="Passive permission-based security configuration checks")
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
 
 # Applied to the dashboard and API responses. CSP works because CSS/JS are separate same-origin files.
@@ -59,3 +60,15 @@ def history_detail(scan_id: str):
     if result is None:
         raise HTTPException(404, 'Scan not found')
     return result
+
+
+@app.get('/api/analytics')
+def scan_analytics(limit: int = Query(default=100, ge=1, le=500)):
+    return analytics(limit)
+
+@app.get('/api/history/{scan_id}/report.pdf')
+def report_pdf(scan_id: str):
+    result = get_scan(scan_id)
+    if result is None:
+        raise HTTPException(404, 'Scan not found')
+    return Response(content=build_pdf(result), media_type='application/pdf', headers={'Content-Disposition': f'attachment; filename="securescan-{scan_id}.pdf"', 'Cache-Control':'no-store'})

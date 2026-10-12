@@ -32,3 +32,22 @@ def get_scan(scan_id):
     with _connect() as conn:
         row = conn.execute('SELECT payload FROM scans WHERE id=?', (scan_id,)).fetchone()
     return json.loads(row[0]) if row else None
+
+
+def analytics(limit=100):
+    """Aggregate a bounded window of saved local assessments."""
+    with _connect() as conn:
+        rows = conn.execute('SELECT payload FROM scans ORDER BY scanned_at DESC, rowid DESC LIMIT ?', (min(max(limit, 1), 500),)).fetchall()
+    reports = [json.loads(row[0]) for row in rows]
+    reports.reverse()
+    severity = {'Critical': 0, 'High': 0, 'Medium': 0, 'Low': 0, 'Informational': 0}
+    trend = []
+    targets = set()
+    for report in reports:
+        targets.add(report['url'])
+        trend.append({'id':report['id'], 'scanned_at':report['scanned_at'], 'url':report['url'], 'score':report['score']})
+        for check in report.get('checks', []):
+            if check.get('status') == 'Needs attention':
+                level = check.get('severity', 'Informational')
+                severity[level if level in severity else 'Informational'] += 1
+    return {'total_scans': len(reports), 'unique_targets': len(targets), 'average_score': round(sum(r['score'] for r in reports)/len(reports),1) if reports else None,'severity':severity,'trend':trend,'sample_limit':min(max(limit, 1), 500)}
