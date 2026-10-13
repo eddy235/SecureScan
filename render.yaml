@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: securescan-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: SECURESCAN_DEMO_MODE
+        value: "true"
+      - key: ALLOW_PUBLIC_SCANS
+        value: "false"
