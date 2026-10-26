@@ -4,6 +4,7 @@
     const response = await fetch('/api/config');
     const config = await response.json();
     if (!config.demo_mode) return;
+    document.querySelector('.private-auth')?.remove();
     const panel = document.querySelector('#scan-panel');
     const heading = document.createElement('div');
     heading.className = 'demo-banner';
