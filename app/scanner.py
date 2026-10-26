@@ -57,8 +57,15 @@ def analyze_headers(url: str, headers: dict[str, str], status_code: int, cookies
         checks.append(_check(name, passed, severity, evidence, remedy, applicable))
     csp = h.get('content-security-policy', '')
     directives = _directives(csp)
-    csp_good = bool(csp) and 'object-src' in directives and 'base-uri' in directives and ('default-src' in directives or 'script-src' in directives)
-    add('Content Security Policy', csp_good, 'High', csp or 'Header absent', 'Define restrictive default-src/script-src, object-src and base-uri directives; validate against your application.')
+    script_policy = directives.get('script-src', directives.get('default-src', ''))
+    script_tokens = set(script_policy.lower().split())
+    unsafe_scripts = "'unsafe-inline'" in script_tokens or "'unsafe-eval'" in script_tokens
+    csp_good = (
+        bool(csp) and 'object-src' in directives and 'base-uri' in directives
+        and ('default-src' in directives or 'script-src' in directives)
+        and bool(script_policy) and not unsafe_scripts
+    )
+    add('Content Security Policy', csp_good, 'High', csp or 'Header absent', 'Define restrictive default-src/script-src, object-src and base-uri directives; avoid unsafe-inline and unsafe-eval; validate against your application.')
     nosniff = h.get('x-content-type-options', '').strip().lower() == 'nosniff'
     add('MIME Sniffing Protection', nosniff, 'Medium', h.get('x-content-type-options', 'Header absent'), 'Set X-Content-Type-Options: nosniff.')
     ref = h.get('referrer-policy', '').strip().lower()
