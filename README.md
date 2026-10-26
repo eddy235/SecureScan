@@ -1,4 +1,4 @@
-# SecureScan — Security Configuration Auditor
+# SecureScan v1.0 — Security Configuration Auditor
 
 [Live read-only demo](https://securescan-demo.onrender.com/) · [Source code](https://github.com/eddy235/SecureScan)
 
@@ -91,6 +91,15 @@ Run `python -m pytest -q`. GitHub Actions runs lint and tests on pull requests.
 - v0.7: certificate-expiry classification, stronger CSP checks, and TLS PDF evidence
 - v0.8: loopback target policy and private scan rate limiting
 - v0.9: dashboard and documentation improvements
-- v1.0: final validation, security review, and portfolio release
+- v1.0: portfolio demonstration release with automated release checks, not a production security certification
 
 **Security scores measure only applicable configuration checks.**
+
+
+## v1.0 release criteria and limitations
+
+The v1.0 release is a portfolio milestone for a **local-only assessment tool with a separate read-only public demonstration**. The browser demonstration never accepts live scan requests. The backend uses a single configured bearer token in private mode and a process-local scan quota; it is not intended as a multi-user hosted scanning service.
+
+Before tagging the release, verify GitHub Actions passes and manually confirm that the Render dashboard loads sample reports, PDF downloads work, and `POST /api/scan` still returns 403. Do not enable unrestricted URL scanning. Localhost resolution and client socket connection are separate steps; external scanning therefore remains unsupported until stronger address pinning and independent security assessment.
+
+Security claims are limited to the specific automated checks and local workflows documented here. Passing tests is not evidence of a comprehensive penetration test.

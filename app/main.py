@@ -15,7 +15,7 @@ from .demo import demo_history, demo_detail, demo_analytics, demo_scan
 
 DEMO_MODE = os.getenv("SECURESCAN_DEMO_MODE", "false").lower() == "true"
 
-app = FastAPI(title="SecureScan", version="0.8.0", description="Passive permission-based security configuration checks")
+app = FastAPI(title="SecureScan", version="1.0.0", description="Passive permission-based security configuration checks")
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
 
 # Applied to the dashboard and API responses. CSP works because CSS/JS are separate same-origin files.
