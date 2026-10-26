@@ -31,6 +31,24 @@ def build_pdf(report):
         for key,title in [('evidence','Evidence'),('recommendation','Recommendation')]:
             if item.get(key): detail.append(Paragraph(f'<b>{title}:</b> {escape(str(item[key]))}',styles['SmallMuted']))
         story.append(KeepTogether(detail))
+    tls = report.get('tls')
+    if isinstance(tls, dict):
+        story.extend([Spacer(1, 5 * mm), Paragraph('TLS certificate inspection', styles['Heading2'])])
+        fields = [
+            ('Status', tls.get('status', 'Unknown')),
+            ('TLS version', tls.get('tls_version', 'Not available')),
+            ('Certificate expiration', tls.get('expires_at', 'Not available')),
+            ('Days remaining', tls.get('days_remaining', 'Not available')),
+            ('Expiring soon', tls.get('expiring_soon', 'Not available')),
+            ('Reason', tls.get('reason', '')),
+        ]
+        for label, value in fields:
+            if value is not None and value != '':
+                story.append(Paragraph(
+                    f'<b>{escape(label)}:</b> {escape(str(value))}',
+                    styles['SmallMuted']
+                ))
+                story.append(Spacer(1, 2 * mm))
     story.extend([Spacer(1,7*mm),Paragraph('Scope and limitations',styles['Heading2']),Paragraph('This report reflects observable response configurations only. Passing checks do not guarantee application security. Assess only systems you are authorized to test.',styles['SmallMuted'])])
     doc.build(story)
     return stream.getvalue()
