@@ -8,13 +8,14 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from .scanner import ScanInputError, scan
 from .tls import inspect_tls_certificate
+from .ratelimit import scan_limiter
 from .history import save_scan, list_scans, get_scan, analytics
 from .reports import build_pdf
 from .demo import demo_history, demo_detail, demo_analytics, demo_scan
 
 DEMO_MODE = os.getenv("SECURESCAN_DEMO_MODE", "false").lower() == "true"
 
-app = FastAPI(title="SecureScan", version="0.6.0", description="Passive permission-based security configuration checks")
+app = FastAPI(title="SecureScan", version="0.8.0", description="Passive permission-based security configuration checks")
 app.mount("/static", StaticFiles(directory=os.path.join(os.path.dirname(__file__), "static")), name="static")
 
 # Applied to the dashboard and API responses. CSP works because CSS/JS are separate same-origin files.
@@ -61,6 +62,8 @@ async def check_website(payload: ScanRequest, _=Depends(private_access)):
         raise HTTPException(403, "Public demo: live scanning is disabled. Explore synthetic reports below.")
     if not payload.authorized:
         raise HTTPException(400, "Confirm you own the target or have permission to assess it.")
+    if not scan_limiter.allow():
+        raise HTTPException(429, "Scan request limit reached. Retry shortly.", headers={"Retry-After": "60"})
     try:
         # This version intentionally permits loopback targets only, including in local mode.
         # DNS rebinding-safe external scanning requires an independent security review.
