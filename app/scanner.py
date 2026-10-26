@@ -1,7 +1,6 @@
 """Passive response configuration assessment. Permission required; local targets by default."""
 from __future__ import annotations
 import ipaddress
-import os
 import re
 import socket
 from urllib.parse import urlsplit
@@ -11,31 +10,34 @@ class ScanInputError(ValueError):
     pass
 
 def validate_target(target: str, allow_public: bool = False) -> str:
-    parsed = urlsplit(target)
-    if parsed.scheme not in ('http', 'https') or not parsed.hostname or parsed.username or parsed.password or parsed.fragment:
-        raise ScanInputError('Provide an http(s) URL without credentials or fragments.')
+    """Allow explicit loopback targets only; never resolve arbitrary hostnames."""
     try:
+        parsed = urlsplit(target)
+        host = parsed.hostname
         port = parsed.port
     except ValueError as exc:
-        raise ScanInputError('Invalid port.') from exc
+        raise ScanInputError('Invalid target URL.') from exc
+    if (parsed.scheme not in ('http', 'https') or not host or
+            parsed.username or parsed.password or parsed.fragment):
+        raise ScanInputError('Provide an http(s) URL without credentials or fragments.')
     if port not in (None, 80, 443, 8000, 8080, 8888):
         raise ScanInputError('Port not allowed.')
-    host = parsed.hostname.lower().rstrip('.')
-    if host == 'localhost':
+    if host.lower() == 'localhost':
+        # Never trust localhost if a modified resolver points it outside loopback.
+        try:
+            addresses = socket.getaddrinfo(host, port or (443 if parsed.scheme == 'https' else 80),
+                                           type=socket.SOCK_STREAM)
+        except socket.gaierror as exc:
+            raise ScanInputError('Localhost resolution failed.') from exc
+        if not addresses or any(not ipaddress.ip_address(item[4][0]).is_loopback for item in addresses):
+            raise ScanInputError('Localhost must resolve exclusively to loopback addresses.')
         return target
     try:
-        results = socket.getaddrinfo(host, port or (443 if parsed.scheme == 'https' else 80), type=socket.SOCK_STREAM)
-    except socket.gaierror as exc:
-        raise ScanInputError('Hostname could not be resolved.') from exc
-    if not results:
-        raise ScanInputError('Hostname could not be resolved.')
-    ips = [ipaddress.ip_address(r[4][0]) for r in results]
-    if all(ip.is_loopback for ip in ips):
-        return target
-    if not allow_public:
-        raise ScanInputError('External scans disabled. Use a controlled localhost target.')
-    if any(not ip.is_global for ip in ips):
-        raise ScanInputError('Private and non-public targets are blocked.')
+        address = ipaddress.ip_address(host)
+    except ValueError as exc:
+        raise ScanInputError('Only explicit loopback IP addresses and localhost are supported.') from exc
+    if not address.is_loopback:
+        raise ScanInputError('External scans disabled. Use a controlled loopback target.')
     return target
 
 def _check(name, passed, severity, evidence, recommendation=None, applicable=True):
