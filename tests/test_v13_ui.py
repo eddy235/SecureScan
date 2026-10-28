@@ -22,6 +22,10 @@ async def test_v13_ui_assets_and_readonly_demo(monkeypatch):
         navigation = (await client.get("/static/navigation.js")).text
         assert "IntersectionObserver" in navigation
         assert "aria-current" in navigation
+        assert "demo-assessment-button" in navigation
+        assert "event.preventDefault()" in navigation
+        demo_script = (await client.get("/static/demo.js")).text
+        assert "button.id = 'demo-assessment-button'" in demo_script
         assert (await client.post("/api/scan", json={
             "url": "http://localhost:8000", "authorized": True
         })).status_code == 403
