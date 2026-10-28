@@ -17,6 +17,6 @@ async def test_command_center_preserves_dashboard_hooks(monkeypatch):
         for link in ('href="#overview"', 'href="#analytics"', 'href="#history"'):
             assert link in page.text
         assert "v1.1" in page.text
-        assert "<script src=\"/static/app.js\" defer>" in page.text
+        assert '/static/app.js?v=1.1.1' in page.text
         assert (await client.get("/static/styles.css")).status_code == 200
         assert (await client.post("/api/scan", json={"url":"http://localhost:8000","authorized":True})).status_code == 403

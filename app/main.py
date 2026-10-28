@@ -50,7 +50,7 @@ class ScanRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return FileResponse(os.path.join(os.path.dirname(__file__), "static", "index.html"))
+    return FileResponse(os.path.join(os.path.dirname(__file__), "static", "index.html"), headers={"Cache-Control": "no-cache, must-revalidate"})
 
 @app.get("/health")
 def health():
