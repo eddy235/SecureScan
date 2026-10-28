@@ -14,8 +14,8 @@ async def test_overview_ui_and_assets(monkeypatch):
         for identifier in ("overview-score", "overview-gauge", "overview-total",
                            "overview-open", "overview-targets", "overview-tls-content"):
             assert 'id="' + identifier + '"' in response.text
-        assert '/static/overview.js?v=1.3.0' in response.text
-        script = await client.get("/static/overview.js?v=1.3.0")
+        assert '/static/overview.js?v=1.3.1' in response.text
+        script = await client.get("/static/overview.js?v=1.3.1")
         assert script.status_code == 200
         assert "getJSON('/api/analytics')" in script.text
         assert "getJSON('/api/history?limit=100')" in script.text
