@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070e1c">
 <title>SecureScan | Security Intelligence Dashboard</title>
-<link rel="stylesheet" href="/static/styles.css?v=1.3.1">
+<link rel="stylesheet" href="/static/styles.css?v=1.4.0">
 </head>
 <body>
 <div class="app-layout">
@@ -18,7 +18,7 @@
       <a class="side-link" href="#history"><span aria-hidden="true">◷</span> History &amp; reports</a>
       <a class="side-link" href="#results"><span aria-hidden="true">◇</span> Findings</a>
     </nav>
-    <div class="sidebar-foot"><span class="connection-dot"></span> Passive assessment only <small>v1.3 · Advanced Insights</small></div>
+    <div class="sidebar-foot"><span class="connection-dot"></span> Passive assessment only <small>v1.4 · Dashboard Polish</small></div>
   </aside>
   <div class="workspace">
     <header class="topbar"><span class="breadcrumb">WORKSPACE <span>/</span> OVERVIEW</span><span class="topbar-tag">LOCAL-FIRST SECURITY</span></header>
@@ -37,7 +37,7 @@
           <article class="overview-tile"><div class="overview-label">OPEN CONFIGURATION FINDINGS</div><div class="overview-number warning" id="overview-open">—</div><p>Needs-attention checks in latest report</p></article>
           <article class="overview-tile"><div class="overview-label">UNIQUE TARGETS</div><div class="overview-number" id="overview-targets">—</div><p>Distinct targets in saved assessments</p></article>
         </div>
-        <div class="overview-bottom">
+        <div class="overview-activity"><div class="overview-label">RECENT ACTIVITY · SAVED ASSESSMENTS</div><div id="recent-activity" class="recent-activity" aria-live="polite">Loading recent assessments…</div><a class="overview-link" href="#history">View complete history ↗</a></div><div class="overview-bottom">
           <div class="overview-insight"><div class="overview-label">LATEST REPORT</div><div id="overview-latest" class="overview-latest">Select an assessment to see its summary.</div><a class="overview-link" href="#history">Explore assessment history ↗</a></div>
           <div class="overview-insight" id="overview-tls"><div class="overview-label">TLS CERTIFICATE INSIGHT</div><div id="overview-tls-content" class="overview-latest">TLS details appear when a saved assessment includes a local certificate inspection.</div></div>
         </div>
@@ -50,7 +50,7 @@
       </section>
       <section class="results" id="results" aria-live="polite"><div class="section-heading"><div class="eyebrow">02 / ASSESSMENT</div><h2>Latest security findings</h2></div><div class="summary" id="summary"></div><div class="panel">
         <div class="panel-heading"><div><h2 class="section-title">Configuration findings</h2><p class="history-small">Evidence and recommended remediation for each checked configuration.</p></div></div>
-        <div class="finding-toolbar"><label for="finding-filter">Show findings</label><select id="finding-filter" aria-label="Filter assessment findings"><option value="all">All checks</option><option value="attention">Needs attention</option><option value="passed">Passed</option><option value="na">Not applicable</option></select></div>
+        <div class="finding-toolbar"><label for="finding-filter">Show findings</label><select id="finding-filter" aria-label="Filter assessment findings"><option value="all">All checks</option><option value="attention">Needs attention</option><option value="passed">Passed</option><option value="na">Not applicable</option></select><select id="severity-filter" aria-label="Filter findings by severity"><option value="all">All severities</option><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Informational">Informational</option></select></div>
         <div class="checks" id="checks"></div><p class="meta" id="note"></p><button class="download" id="download">↓ Export JSON report</button>
       </div></section>
       <section class="panel analytics" id="analytics"><div class="panel-heading"><div><div class="eyebrow">03 / INSIGHTS</div><h2 class="section-title">Security analytics</h2></div><span class="panel-kicker">CONFIGURATION METRICS</span></div>
@@ -66,7 +66,7 @@
     </main>
   </div>
 </div>
-<script src="/static/app.js?v=1.3.1" defer></script><script src="/static/demo.js?v=1.3.1" defer></script><script src="/static/filters.js?v=1.3.1" defer></script>
-<script src="/static/overview.js?v=1.3.1" defer></script>
-<script src="/static/findings.js?v=1.3.1" defer></script><script src="/static/navigation.js?v=1.3.1" defer></script>
+<script src="/static/app.js?v=1.4.0" defer></script><script src="/static/demo.js?v=1.4.0" defer></script><script src="/static/filters.js?v=1.4.0" defer></script>
+<script src="/static/overview.js?v=1.4.0" defer></script>
+<script src="/static/findings.js?v=1.4.0" defer></script><script src="/static/navigation.js?v=1.4.0" defer></script>
 </body></html>
