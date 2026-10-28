@@ -13,8 +13,8 @@ async def test_v14_activity_filter_assets_and_demo_safety(monkeypatch):
         assert page.status_code == 200
         assert 'id="recent-activity"' in page.text
         assert 'id="severity-filter"' in page.text
-        assert "/static/overview.js?v=1.4.0" in page.text
-        assert "/static/filters.js?v=1.4.0" in page.text
+        assert "/static/overview.js?v=1.5.0" in page.text
+        assert "/static/filters.js?v=1.5.0" in page.text
         overview = (await client.get("/static/overview.js")).text
         assert "renderActivity(history)" in overview
         assert "textContent" in overview
