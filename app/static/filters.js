@@ -1,23 +1,32 @@
-/* Accessible client-side filtering; never interpolates report data as HTML. */
+/* Filter by explicit report status and severity using safe DOM properties. */
 (() => {
-  const select = document.querySelector('#finding-filter');
+  const status = document.querySelector('#finding-filter');
+  const severity = document.querySelector('#severity-filter');
   const root = document.querySelector('#checks');
-  if (!select || !root) return;
+  if (!status || !severity || !root) return;
+  let checks = [];
   function refresh() {
-    const choice = select.value;
-    let visible = 0;
-    for (const item of root.querySelectorAll('.check')) {
-      const text = item.textContent.toLowerCase();
-      const passes = choice === 'all' ||
-        (choice === 'attention' && text.includes('needs attention')) ||
-        (choice === 'passed' && text.includes('passed')) ||
-        (choice === 'na' && text.includes('not applicable'));
-      item.hidden = !passes;
-      if (passes) visible += 1;
-    }
-    root.setAttribute('aria-label', visible + ' findings displayed');
+    let count = 0;
+    const rows = [...root.querySelectorAll('.check')];
+    rows.forEach((row, i) => {
+      const check = checks[i];
+      const kind = check?.status === 'Needs attention' ? 'attention' :
+        check?.status === 'Passed' ? 'passed' :
+        check?.status === 'Not applicable' ? 'na' : row.dataset.status || 'unknown';
+      const sev = check?.severity || 'Informational';
+      const shown = (status.value === 'all' || status.value === kind) &&
+        (severity.value === 'all' || severity.value === sev);
+      row.hidden = !shown;
+      if (shown) count += 1;
+    });
+    root.setAttribute('aria-label', count + ' findings displayed');
   }
-  select.addEventListener('change', refresh);
+  document.addEventListener('securescan:report', event => {
+    checks = Array.isArray(event.detail?.checks) ? event.detail.checks : [];
+    refresh();
+  });
+  status.addEventListener('change', refresh);
+  severity.addEventListener('change', refresh);
   new MutationObserver(refresh).observe(root, {childList: true});
   refresh();
 })();

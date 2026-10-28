@@ -47,6 +47,30 @@
     set('overview-latest', (item.url || 'Saved assessment') + (item.scanned_at ? ' · ' + item.scanned_at : ''));
     showTLS(item.tls);
   }
+  function renderActivity(history) {
+    const root = byId('recent-activity');
+    if (!root) return;
+    root.replaceChildren();
+    if (!Array.isArray(history) || !history.length) {
+      root.textContent = 'No assessments available yet.';
+      return;
+    }
+    for (const item of history.slice(0, 4)) {
+      const row = document.createElement('div');
+      row.className = 'recent-activity-row';
+      const info = document.createElement('div');
+      const url = document.createElement('strong');
+      url.textContent = item.url || 'Saved assessment';
+      const date = document.createElement('small');
+      date.textContent = item.scanned_at || 'Date unavailable';
+      info.append(url, date);
+      const score = document.createElement('span');
+      score.className = 'recent-score';
+      score.textContent = typeof item.score === 'number' ? item.score + '%' : '—';
+      row.append(info, score);
+      root.append(row);
+    }
+  }
   async function getJSON(path) {
     const response = await (typeof apiFetch === 'function' ? apiFetch(path) : fetch(path));
     if (!response.ok) throw new Error('API returned ' + response.status);
@@ -61,8 +85,10 @@
         set('overview-mode', 'No saved assessments');
         set('overview-open', '—');
         showTLS(null);
+        renderActivity([]);
         return;
       }
+      renderActivity(history);
       const latest = history[0];
       set('overview-mode', 'Based on saved assessments');
       try {
@@ -77,6 +103,8 @@
       set('overview-targets', '—');
       set('overview-open', '—');
       set('overview-score', '—');
+      const root = byId('recent-activity');
+      if (root) root.textContent = 'Assessment history requires authorized access.';
     }
   }
   document.addEventListener('securescan:report', event => {
