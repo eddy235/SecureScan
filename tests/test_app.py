@@ -18,7 +18,7 @@ async def test_security_headers_and_frontend(configured_db):
         assert page.status_code == 200
         assert "script-src 'self'" in page.headers['content-security-policy']
         assert page.headers['x-content-type-options']=='nosniff'
-        assert 'src="/static/app.js?v=1.2.0"' in page.text
+        assert 'src="/static/app.js?v=1.3.0"' in page.text
         assert '<style>' not in page.text
         assert 'style=' not in page.text
         asset=await client.get('/static/app.js')
