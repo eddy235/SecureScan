@@ -1,4 +1,4 @@
-# SecureScan v1.0 — Security Configuration Auditor
+# SecureScan — Security Configuration Auditor
 
 [Live read-only demo](https://securescan-demo.onrender.com/) · [Source code](https://github.com/eddy235/SecureScan)
 
@@ -13,7 +13,7 @@ SecureScan is a **local-first, passive website configuration auditor** built wit
 - Bearer-token protection for private local scans, history, analytics, and reports
 - Process-local scan throttling and loopback-only target validation
 - Public **synthetic read-only** demonstration; visitors cannot submit live scans
-- Responsive dashboard, keyboard-focus styles, and finding filters
+- Responsive intelligence dashboard with accessible navigation, keyboard-focus styles, expandable findings, severity filters, recent activity, and TLS insights
 - Automated Python tests via GitHub Actions
 
 ## Local setup (Windows PowerShell)
@@ -103,3 +103,26 @@ The v1.0 release is a portfolio milestone for a **local-only assessment tool wit
 Before tagging the release, verify GitHub Actions passes and manually confirm that the Render dashboard loads sample reports, PDF downloads work, and `POST /api/scan` still returns 403. Do not enable unrestricted URL scanning. Localhost resolution and client socket connection are separate steps; external scanning therefore remains unsupported until stronger address pinning and independent security assessment.
 
 Security claims are limited to the specific automated checks and local workflows documented here. Passing tests is not evidence of a comprehensive penetration test.
+
+
+## Portfolio case study — interface evolution (v1.1–v1.5)
+
+**Challenge:** Communicate passive website configuration findings in a way that developers can quickly understand without mistaking an assessment score for proof of overall security.
+
+**Solution:** A responsive, dark-themed intelligence dashboard with a configuration-score gauge, saved-assessment KPIs, activity history, severity-filtered findings, expandable evidence and remediation guidance, and optional local TLS certificate insight. All displayed metrics are based on saved assessments; the publicly hosted demo uses only synthetic records.
+
+**Engineering decisions:** Keep the existing FastAPI/vanilla JavaScript stack; use DOM text insertion rather than interpreting report values as HTML; serve versioned static assets to avoid stale CSS; preserve authenticated local workflows separately from read-only public demo mode. Keyboard navigation includes visible focus, semantic section links and a skip-to-content action. Reduced-motion preferences are respected.
+
+**What I tested:** Python regression suite via GitHub Actions, API demo restrictions (scan POST returns 403), static asset loading, and dashboard element contracts. Browser-based visual checks are still needed across mobile, tablet and desktop; automated smoke tests do not guarantee full accessibility compliance.
+
+**Portfolio talking points:** secure-by-default design, API integration, threat-model boundaries, resilience to stale frontend assets, CI/CD, data-driven reporting and iterative feedback-driven UX improvements.
+
+### Manual release-review checklist
+
+- Desktop, tablet and mobile: navigation, card wrapping, filter controls and report exports
+- Keyboard only: Tab navigation, Skip to main content, opening findings and visible focus
+- Reduced-motion and high-contrast preferences where supported
+- Demo: synthetic assessment, history, PDF download and disabled live scanning
+- Private localhost mode: bearer-token authorization, local-only targets and expected error states
+
+Do not present the demo as scanning arbitrary websites or claim that the checks certify a site's security.
