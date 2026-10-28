@@ -1,4 +1,4 @@
-"""v1.1 command center shell contracts."""
+"""v1.2 command center shell contracts."""
 import httpx
 import pytest
 
@@ -16,7 +16,7 @@ async def test_command_center_preserves_dashboard_hooks(monkeypatch):
             assert hook in page.text
         for link in ('href="#overview"', 'href="#analytics"', 'href="#history"'):
             assert link in page.text
-        assert "v1.1" in page.text
-        assert '/static/app.js?v=1.1.1' in page.text
+        assert "v1.2" in page.text
+        assert '/static/app.js?v=1.2.0' in page.text
         assert (await client.get("/static/styles.css")).status_code == 200
         assert (await client.post("/api/scan", json={"url":"http://localhost:8000","authorized":True})).status_code == 403
