@@ -12,7 +12,7 @@ async def test_v13_ui_assets_and_readonly_demo(monkeypatch):
         page = await client.get("/")
         assert page.status_code == 200
         for asset in ("findings.js", "navigation.js", "styles.css", "app.js"):
-            assert f"/static/{asset}?v=1.3.0" in page.text
+            assert f"/static/{asset}?v=1.3.1" in page.text
             script = await client.get(f"/static/{asset}")
             assert script.status_code == 200
         findings = (await client.get("/static/findings.js")).text
@@ -22,6 +22,10 @@ async def test_v13_ui_assets_and_readonly_demo(monkeypatch):
         navigation = (await client.get("/static/navigation.js")).text
         assert "IntersectionObserver" in navigation
         assert "aria-current" in navigation
+        assert "demo-assessment-button" in navigation
+        assert "event.preventDefault()" in navigation
+        demo_script = (await client.get("/static/demo.js")).text
+        assert "button.id = 'demo-assessment-button'" in demo_script
         assert (await client.post("/api/scan", json={
             "url": "http://localhost:8000", "authorized": True
         })).status_code == 403

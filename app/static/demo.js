@@ -16,6 +16,7 @@
     const button = document.createElement('button');
     button.textContent = 'Explore sample assessment →';
     button.className = 'download';
+    button.id = 'demo-assessment-button';
     button.addEventListener('click', async () => {
       const r = await fetch('/api/history/demo-003');
       const sample = await r.json();
