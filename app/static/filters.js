@@ -1,4 +1,4 @@
-/* Filter by explicit report status and severity; no innerHTML or inference from prose. */
+/* Filter by explicit report status and severity using safe DOM properties. */
 (() => {
   const status = document.querySelector('#finding-filter');
   const severity = document.querySelector('#severity-filter');
