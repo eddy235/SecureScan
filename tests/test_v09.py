@@ -13,7 +13,7 @@ async def test_dashboard_assets_and_security_headers(monkeypatch):
         assert page.status_code == 200
         assert 'id="finding-filter"' in page.text
         assert '/static/filters.js' in page.text
-        assert 'v1.2' in page.text
+        assert 'v1.3' in page.text
         assert "script-src 'self'" in page.headers["content-security-policy"]
         asset = await client.get("/static/filters.js")
         assert asset.status_code == 200
