@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#070e1c">
 <title>SecureScan | Security Intelligence Dashboard</title>
-<link rel="stylesheet" href="/static/styles.css?v=1.1.1">
+<link rel="stylesheet" href="/static/styles.css?v=1.2.0">
 </head>
 <body>
 <div class="app-layout">
@@ -18,7 +18,7 @@
       <a class="side-link" href="#history"><span aria-hidden="true">◷</span> History &amp; reports</a>
       <a class="side-link" href="#results"><span aria-hidden="true">◇</span> Findings</a>
     </nav>
-    <div class="sidebar-foot"><span class="connection-dot"></span> Passive assessment only <small>v1.1 · Command Center</small></div>
+    <div class="sidebar-foot"><span class="connection-dot"></span> Passive assessment only <small>v1.2 · Intelligence Dashboard</small></div>
   </aside>
   <div class="workspace">
     <header class="topbar"><span class="breadcrumb">WORKSPACE <span>/</span> OVERVIEW</span><span class="topbar-tag">LOCAL-FIRST SECURITY</span></header>
@@ -28,6 +28,19 @@
         <h1>Security clarity.<br><em>Built into every check.</em></h1>
         <p class="sub">A smarter view of HTTP security configurations, local TLS checks, and remediation priorities. Authorized, passive assessments only.</p>
         <div class="hero-badges"><span>◇ Configuration insights</span><span>◎ Historical trends</span><span>↓ PDF &amp; JSON exports</span></div>
+      </section>
+      <section class="overview-dashboard" aria-label="Security overview">
+        <div class="overview-head"><div><div class="eyebrow">LIVE DASHBOARD / LAST SAVED ASSESSMENT</div><h2>Security at a glance</h2></div><span class="overview-note" id="overview-mode">Loading assessment metrics…</span></div>
+        <div class="overview-grid">
+          <article class="overview-tile score-tile"><div class="overview-label">LATEST CONFIGURATION SCORE</div><div class="gauge-wrap"><div class="score-gauge" id="overview-gauge" role="img" aria-label="No score loaded"><span id="overview-score">—</span></div><div><strong id="overview-risk">No assessment</strong><p>Percentage of applicable checks passed, not a vulnerability score.</p></div></div></article>
+          <article class="overview-tile"><div class="overview-label">SAVED ASSESSMENTS</div><div class="overview-number" id="overview-total">—</div><p>Assessments available for review</p></article>
+          <article class="overview-tile"><div class="overview-label">OPEN CONFIGURATION FINDINGS</div><div class="overview-number warning" id="overview-open">—</div><p>Needs-attention checks in latest report</p></article>
+          <article class="overview-tile"><div class="overview-label">UNIQUE TARGETS</div><div class="overview-number" id="overview-targets">—</div><p>Distinct targets in saved assessments</p></article>
+        </div>
+        <div class="overview-bottom">
+          <div class="overview-insight"><div class="overview-label">LATEST REPORT</div><div id="overview-latest" class="overview-latest">Select an assessment to see its summary.</div><a class="overview-link" href="#history">Explore assessment history ↗</a></div>
+          <div class="overview-insight" id="overview-tls"><div class="overview-label">TLS CERTIFICATE INSIGHT</div><div id="overview-tls-content" class="overview-latest">TLS details appear when a saved assessment includes a local certificate inspection.</div></div>
+        </div>
       </section>
       <section class="panel scan-panel" id="scan-panel" aria-labelledby="scan-title">
         <div class="panel-heading"><div><div class="eyebrow">01 / SCANNER</div><h2 id="scan-title">New security assessment</h2></div><span class="panel-kicker">CONTROLLED ENVIRONMENT</span></div>
@@ -53,5 +66,6 @@
     </main>
   </div>
 </div>
-<script src="/static/app.js?v=1.1.1" defer></script><script src="/static/demo.js?v=1.1.1" defer></script><script src="/static/filters.js?v=1.1.1" defer></script>
+<script src="/static/app.js?v=1.2.0" defer></script><script src="/static/demo.js?v=1.2.0" defer></script><script src="/static/filters.js?v=1.2.0" defer></script>
+<script src="/static/overview.js?v=1.2.0" defer></script>
 </body></html>
