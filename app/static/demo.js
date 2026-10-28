@@ -20,6 +20,7 @@
       const r = await fetch('/api/history/demo-003');
       const sample = await r.json();
       report = sample;
+      document.dispatchEvent(new CustomEvent('securescan:report', {detail: sample}));
       const summary = document.querySelector('#summary');
       summary.replaceChildren();
       for (const [k,v] of [['Checks passed', sample.score+'%'],['Overall risk',sample.risk],['HTTP status',sample.status_code]]) {
